@@ -42,7 +42,7 @@ const userName = computed(function () {
 
 function logout() {
   store.dispatch('logout');
-};
+}
 
 </script>
 
