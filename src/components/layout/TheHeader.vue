@@ -34,15 +34,15 @@ const store = useStore();
 
 const isLoggedIn = computed(function () {
   return store.getters.getToken != null;
-})
+});
 
 const userName = computed(function () {
   return store.getters.getUser.name;
-})
+});
 
 function logout() {
   store.dispatch('logout');
-}
+};
 
 </script>
 

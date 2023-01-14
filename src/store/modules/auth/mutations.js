@@ -4,5 +4,5 @@ export default {
         state.tokenExpiresAt = payload.tokenExpiresAt;
         state.user = payload.user;
         state.userActions = payload.userActions;
-    }
+    },
 };

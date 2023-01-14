@@ -25,7 +25,6 @@ const router = createRouter({
             // meta: { requiresAuth: true }
         },
     ],
-
 });
 
 router.beforeEach((to, fro, next) => {
