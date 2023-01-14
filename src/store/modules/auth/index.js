@@ -8,6 +8,7 @@ export default {
             token: null,
             tokenExpiresAt: null,
             user: null,
+            userActions: null,
         };
     },
     getters,

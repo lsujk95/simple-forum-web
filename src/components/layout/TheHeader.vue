@@ -15,9 +15,10 @@
           <!-- Right Side Of Navbar -->
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
-            <li v-if="!isLogged" class="nav-item"><router-link class="nav-link" to="/login">Login</router-link></li>
-            <li v-if="!isLogged" class="nav-item"><router-link class="nav-link" to="/register">Register</router-link></li>
-            <li v-if="isLogged" class="nav-item"><router-link class="nav-link" to="/panel">{{ userName }}</router-link></li>
+            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" to="/login">Login</router-link></li>
+            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" to="/register">Register</router-link></li>
+            <li v-if="isLoggedIn" class="nav-item"><router-link class="nav-link" to="/panel">{{ userName }}</router-link></li>
+            <li v-if="isLoggedIn" class="nav-item"><a href="#" class="nav-link" @click="logout">Logout</a></li>
           </ul>
         </div>
       </div>
@@ -31,13 +32,17 @@ import { useStore } from 'vuex';
 
 const store = useStore();
 
-const isLogged = computed(function () {
+const isLoggedIn = computed(function () {
   return store.getters.getToken != null;
 })
 
 const userName = computed(function () {
   return store.getters.getUser.name;
 })
+
+function logout() {
+  store.dispatch('logout');
+}
 
 </script>
 

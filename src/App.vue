@@ -11,6 +11,10 @@
 
 <script setup>
   import TheHeader from './components/layout/TheHeader.vue';
+  import { useStore } from 'vuex';
+
+  const store = useStore();
+  store.dispatch('restoreLogin');
 </script>
 
 <style>

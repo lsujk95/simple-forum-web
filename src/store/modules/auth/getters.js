@@ -8,4 +8,7 @@ export default {
     getUser(state) {
         return state.user;
     },
+    getUserActions(state) {
+        return state.userActions;
+    },
 };
