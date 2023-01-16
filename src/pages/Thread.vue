@@ -45,10 +45,16 @@ const isLoading = computed(() => {
   return thread.value == null;
 });
 
-onMounted(async () => {
-  const threadResponse = await threadService.getThread(route.params.id);
-  if (threadResponse.data.success === true) {
-    thread.value = threadResponse.data.data;
+async function loadThread() {
+  try {
+    const threadResponse = await threadService.getThread(route.params.id);
+    if (threadResponse.data.success === true) {
+      thread.value = threadResponse.data.data;
+    }
+  } catch (e) {
+    console.log(e);
   }
-});
+}
+loadThread();
+
 </script>

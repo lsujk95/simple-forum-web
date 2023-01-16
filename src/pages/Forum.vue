@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
 import forumService from './../services/forum.js';
@@ -41,10 +41,16 @@ const isLoading = computed(() => {
   return forum.value == null;
 });
 
-onMounted(async () => {
-  const forumResponse = await forumService.getForum(route.params.id);
-  if (forumResponse.data.success === true) {
-    forum.value = forumResponse.data.data;
+async function loadForum() {
+  try {
+    const forumResponse = await forumService.getForum(route.params.id);
+    if (forumResponse.data.success === true) {
+      forum.value = forumResponse.data.data;
+    }
+  } catch (e) {
+    console.log(e);
   }
-});
+}
+loadForum();
+
 </script>

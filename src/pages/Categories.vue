@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed } from 'vue';
 import categoryService from './../services/category.js';
 
 const categories = ref(null);
@@ -36,10 +36,16 @@ const isLoading = computed(() => {
   return categories.value == null;
 });
 
-onMounted(async () => {
-  const categoryResponse = await categoryService.getCategories();
-  if (categoryResponse.data.success === true) {
-    categories.value = categoryResponse.data.data;
+async function loadCategories() {
+  try {
+    const categoryResponse = await categoryService.getCategories();
+    if (categoryResponse.data.success === true) {
+      categories.value = categoryResponse.data.data;
+    }
+  } catch (e) {
+    console.log(e);
   }
-});
+}
+loadCategories();
+
 </script>
