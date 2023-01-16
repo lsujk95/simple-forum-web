@@ -1,0 +1,50 @@
+<template>
+  <div class="container">
+    <div v-if="isLoading">
+      <div class="row mt-4">
+        <div class="col-12 text-center">
+          <p>Loading...</p>
+        </div>
+      </div>
+    </div>
+    <div v-else>
+      <div class="row mt-4">
+        <div class="col-8 offset-2 mb-4">
+          <div class="card">
+            <div class="card-header">
+              {{ forum.name }}
+            </div>
+            <ul class="list-group list-group-flush">
+              <li v-for="thread in forum.threads" v-bind:key="thread.id" class="list-group-item d-flex">
+                <router-link :to="{name: 'threads.details', params: {id: thread.id}}" class="flex-fill">{{ thread.name }}</router-link>
+                <span class="text-muted">created at {{ moment(thread.createdAt).format('DD.MM.YYYY') }}</span>
+              </li>
+              <li v-if="forum.threads.length == 0" class="list-group-item">No threads...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import moment from 'moment';
+import forumService from './../services/forum.js';
+
+const route = useRoute();
+const forum = ref(null);
+
+const isLoading = computed(() => {
+  return forum.value == null;
+});
+
+onMounted(async () => {
+  const forumResponse = await forumService.getForum(route.params.id);
+  if (forumResponse.data.success === true) {
+    forum.value = forumResponse.data.data;
+  }
+});
+</script>

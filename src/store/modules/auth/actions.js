@@ -1,4 +1,4 @@
-import axios from 'axios'
+import authService from '../../../services/auth.js';
 
 export default {
     async restoreLogin(context) {
@@ -17,32 +17,9 @@ export default {
       localStorage.clear('auth');
     },
     async login(context, payload) {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/get-token', {
-            email: payload.email,
-            password: payload.password,
-        }, {
-            headers: {
-                'Accept': 'application/json',
-                'Accept-Language': 'pl',
-                'Device-Name': 'webapp',
-            }
-        });
-
+        const response = await authService.login(payload.email, payload.password);
         if (response.data.success === true) {
-            const data = response.data.data;
-            const auth = {
-                token: data['token'],
-                tokenExpiresAt: data['token_expires_at'],
-                user: {
-                    id: data['user']['id'],
-                    name: data['user']['name'],
-                    email: data['user']['email'],
-                    emailVerifiedAt: data['email_verified_at'],
-                    createdAt: data['user']['created_at'],
-                    updatedAt: data['user']['updated_at'],
-                },
-                userActions: data['user_actions'],
-            };
+            const auth = response.data.data;
 
             await context.commit('setAuth', auth);
             localStorage.setItem('auth', JSON.stringify(auth));
@@ -51,33 +28,9 @@ export default {
         return response.data;
     },
     async register(context, payload) {
-        const response = await axios.post('http://127.0.0.1:8000/api/auth/register', {
-            email: payload.email,
-            password: payload.password,
-            name: payload.name,
-        }, {
-            headers: {
-                'Accept': 'application/json',
-                'Accept-Language': 'pl',
-                'Device-Name': 'webapp',
-            }
-        });
-
+        const response = await authService.register(payload.email, payload.password, payload.name);
         if (response.data.success === true) {
-            const data = response.data.data;
-            const auth = {
-                token: data['token'],
-                tokenExpiresAt: data['token_expires_at'],
-                user: {
-                    id: data['user']['id'],
-                    name: data['user']['name'],
-                    email: data['user']['email'],
-                    emailVerifiedAt: data['email_verified_at'],
-                    createdAt: data['user']['created_at'],
-                    updatedAt: data['user']['updated_at'],
-                },
-                userActions: data['user_actions'],
-            };
+            const auth = response.data.data;
 
             await context.commit('setAuth', auth);
             localStorage.setItem('auth', JSON.stringify(auth));

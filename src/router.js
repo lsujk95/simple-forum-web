@@ -1,18 +1,21 @@
 import { createRouter, createWebHistory } from "vue-router";
 import store from './store/index.js';
 
-import HomePage from './pages/Home.vue';
-import LoginPage from './pages/Login.vue';
-import RegisterPage from './pages/Register.vue';
+import LoginPage from './pages/auth/Login.vue';
+import RegisterPage from './pages/auth/Register.vue';
+
+import CategoriesPage from './pages/Categories.vue';
+import ForumPage from './pages/Forum.vue';
+import ThreadPage from './pages/Thread.vue';
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        {
-            path: '/',
-            component: HomePage,
-            name: 'home',
-        },
+        // {
+        //     path: '/',
+        //     redirect: '/categories',
+        //     name: 'home',
+        // },
         {
             path: '/login',
             component: LoginPage,
@@ -24,13 +27,28 @@ const router = createRouter({
             name: 'register',
             // meta: { requiresAuth: true }
         },
+        {
+            path: '/categories',
+            alias: '/',
+            component: CategoriesPage,
+            name: 'categories',
+        },
+        {
+            path: '/forums/:id',
+            component: ForumPage,
+            name: 'forums.details',
+        },
+        {
+            path: '/threads/:id',
+            component: ThreadPage,
+            name: 'threads.details',
+        }
     ],
 });
 
 router.beforeEach((to, fro, next) => {
     const isLoggedIn = store.getters.getToken != null;
     if (to.name === 'login' && isLoggedIn) {
-        console.log('login!!');
         next({ name: 'home' });
     }
 
