@@ -3,7 +3,7 @@
     <div v-if="isLoading">
       <div class="row mt-4">
         <div class="col-12 text-center">
-          <p>Loading...</p>
+          <loading-box></loading-box>
         </div>
       </div>
     </div>
@@ -29,10 +29,11 @@
 <script setup>
 import { ref, computed } from 'vue';
 import categoryService from './../services/category.js';
+import LoadingBox from './../components/layout/LoadingBox.vue';
 
 const categories = ref(null);
 
-const isLoading = computed(() => {
+const isLoading = computed(function () {
   return categories.value == null;
 });
 

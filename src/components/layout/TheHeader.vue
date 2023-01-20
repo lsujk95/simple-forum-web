@@ -15,8 +15,8 @@
           <!-- Right Side Of Navbar -->
           <ul class="navbar-nav ms-auto">
             <li class="nav-item"><router-link class="nav-link" to="/">Home</router-link></li>
-            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" to="/login">Login</router-link></li>
-            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" to="/register">Register</router-link></li>
+            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" :to="{name: 'login'}">Login</router-link></li>
+            <li v-if="!isLoggedIn" class="nav-item"><router-link class="nav-link" :to="{name: 'register'}">Register</router-link></li>
             <li v-if="isLoggedIn" class="nav-item"><router-link class="nav-link" to="/panel">{{ userName }}</router-link></li>
             <li v-if="isLoggedIn" class="nav-item"><a href="#" class="nav-link" @click="logout">Logout</a></li>
           </ul>
@@ -29,8 +29,10 @@
 <script setup>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 const store = useStore();
+const router = useRouter();
 
 const isLoggedIn = computed(function () {
   return store.getters.getToken != null;
@@ -40,8 +42,9 @@ const userName = computed(function () {
   return store.getters.getUser.name;
 });
 
-function logout() {
-  store.dispatch('logout');
+async function logout() {
+  await store.dispatch('logout');
+  await router.push({name: 'categories'});
 }
 
 </script>

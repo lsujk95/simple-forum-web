@@ -3,7 +3,7 @@
     <div v-if="isLoading">
       <div class="row mt-4">
         <div class="col-12 text-center">
-          <p>Loading...</p>
+          <loading-box></loading-box>
         </div>
       </div>
     </div>
@@ -33,11 +33,12 @@ import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
 import forumService from './../services/forum.js';
+import LoadingBox from '../components/layout/LoadingBox.vue';
 
 const route = useRoute();
 const forum = ref(null);
 
-const isLoading = computed(() => {
+const isLoading = computed(function () {
   return forum.value == null;
 });
 
