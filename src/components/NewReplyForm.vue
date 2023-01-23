@@ -6,7 +6,7 @@
         <form v-else @submit.prevent="onFormSubmit">
           <div class="mb-3">
             <label for="replyContent" class="form-label"><h3>New Reply:</h3></label>
-            <textarea class="form-control" :class="{'is-invalid': replyError}"  id="replyContent" rows="3" v-model="replyContent"></textarea>
+            <textarea class="form-control" :class="{'is-invalid': replyError}" style="resize: none;" id="replyContent" rows="3" v-model="replyContent"></textarea>
             <div class="invalid-feedback">
               {{ replyError }}
             </div>
@@ -26,8 +26,8 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from 'vue';
 import { useStore } from 'vuex';
-import replyService from '../services/reply.js';
 import LoadingBox from './layout/LoadingBox.vue';
+import useReply from './../hooks/reply.js';
 
 const props = defineProps({
   threadId: Number,
@@ -35,6 +35,7 @@ const props = defineProps({
 
 const emits = defineEmits(['replyAdd']);
 const store = useStore();
+const replyHook = useReply();
 
 const isLoggedIn = computed(function () {
   return store.getters.getToken != null;
@@ -49,7 +50,7 @@ async function onFormSubmit() {
   replyDuringAdd.value = true;
 
   try {
-    const replyResponse = await replyService.addReply(store.getters.getToken, props.threadId, replyContent.value);
+    const replyResponse = await replyHook.addReply(props.threadId, replyContent.value);
     if (replyResponse.data.success === true) {
       replyContent.value = "";
       emits('replyAdd', replyResponse.data.data);
