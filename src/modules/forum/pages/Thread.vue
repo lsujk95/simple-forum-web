@@ -41,13 +41,14 @@
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
-import threadService from './../services/thread.js';
+import useThread from './../hooks/thread';
 
 import TheReply from './../components/TheReply.vue';
 import NewReplyForm from './../components/NewReplyForm.vue';
-import LoadingBox from './../components/layout/LoadingBox.vue';
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
 
 const route = useRoute();
+const threadHook = useThread();
 
 const isLoaded = ref(false);
 const thread = ref(null);
@@ -55,7 +56,7 @@ const thread = ref(null);
 async function loadThread() {
   isLoaded.value = false;
   try {
-    const threadResponse = await threadService.getThread(route.params.id);
+    const threadResponse = await threadHook.getThread(route.params.id);
     if (threadResponse.data.success === true) {
       thread.value = threadResponse.data.data;
       isLoaded.value = true;

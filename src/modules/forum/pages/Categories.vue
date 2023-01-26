@@ -28,9 +28,10 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import categoryService from './../services/category.js';
-import LoadingBox from './../components/layout/LoadingBox.vue';
+import useCategories from "../hooks/categories.js";
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
 
+const categoriesHook = useCategories();
 const categories = ref(null);
 
 const isLoading = computed(function () {
@@ -39,7 +40,7 @@ const isLoading = computed(function () {
 
 async function loadCategories() {
   try {
-    const categoryResponse = await categoryService.getCategories();
+    const categoryResponse = await categoriesHook.getCategories();
     if (categoryResponse.data.success === true) {
       categories.value = categoryResponse.data.data;
     }

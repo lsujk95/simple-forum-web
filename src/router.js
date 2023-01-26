@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from './store/index.js';
+import store from './store.js';
 
-import LoginPage from './pages/auth/Login.vue';
-import RegisterPage from './pages/auth/Register.vue';
+import LoginPage from './modules/auth/pages/Login.vue';
+import RegisterPage from './modules/auth/pages/Register.vue';
 
-import CategoriesPage from './pages/Categories.vue';
-import ForumPage from './pages/Forum.vue';
-import ThreadPage from './pages/Thread.vue';
+import CategoriesPage from './modules/forum/pages/Categories.vue';
+import ForumPage from './modules/forum/pages/Forum.vue';
+import ThreadPage from './modules/forum/pages/Thread.vue';
 
 const router = createRouter({
     history: createWebHistory(),

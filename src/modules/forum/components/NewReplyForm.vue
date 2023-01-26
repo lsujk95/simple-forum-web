@@ -5,7 +5,7 @@
         <loading-box v-if="replyDuringAdd"></loading-box>
         <form v-else @submit.prevent="onFormSubmit">
           <div class="mb-3">
-            <label for="replyContent" class="form-label"><h3>New Reply:</h3></label>
+            <label for="replyContent" class="form-label">New Reply:</label>
             <textarea class="form-control" :class="{'is-invalid': replyError}" style="resize: none;" id="replyContent" rows="3" v-model="replyContent"></textarea>
             <div class="invalid-feedback">
               {{ replyError }}
@@ -26,7 +26,7 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from 'vue';
 import { useStore } from 'vuex';
-import LoadingBox from './layout/LoadingBox.vue';
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
 import useReply from './../hooks/reply.js';
 
 const props = defineProps({

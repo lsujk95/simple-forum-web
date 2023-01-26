@@ -1,4 +1,4 @@
-import authService from '../../../services/auth.js';
+import useAuth from './../hooks/auth.js';
 
 export default {
     async restoreLogin(context) {
@@ -17,7 +17,8 @@ export default {
       localStorage.clear('auth');
     },
     async login(context, payload) {
-        const response = await authService.login(payload.email, payload.password);
+        const authHook = useAuth();
+        const response = await authHook.login(payload.email, payload.password);
         if (response.data.success === true) {
             const auth = response.data.data;
 
@@ -28,7 +29,8 @@ export default {
         return response.data;
     },
     async register(context, payload) {
-        const response = await authService.register(payload.email, payload.password, payload.name);
+        const authHook = useAuth();
+        const response = await authHook.register(payload.email, payload.password, payload.name);
         if (response.data.success === true) {
             const auth = response.data.data;
 

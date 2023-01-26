@@ -19,7 +19,7 @@
                 <router-link :to="{name: 'threads.details', params: {id: thread.id}}" class="flex-fill">{{ thread.name }}</router-link>
                 <span class="text-muted">created at {{ moment(thread.createdAt).format('DD.MM.YYYY') }}</span>
               </li>
-              <li v-if="forum.threads.length == 0" class="list-group-item">No threads...</li>
+              <li v-if="forum.threads.length === 0" class="list-group-item">No threads...</li>
             </ul>
           </div>
         </div>
@@ -32,10 +32,12 @@
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
-import forumService from './../services/forum.js';
-import LoadingBox from '../components/layout/LoadingBox.vue';
+import useForum from './../hooks/forum.js';
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
 
 const route = useRoute();
+const forumHook = useForum();
+
 const forum = ref(null);
 
 const isLoading = computed(function () {
@@ -44,7 +46,7 @@ const isLoading = computed(function () {
 
 async function loadForum() {
   try {
-    const forumResponse = await forumService.getForum(route.params.id);
+    const forumResponse = await forumHook.getForum(route.params.id);
     if (forumResponse.data.success === true) {
       forum.value = forumResponse.data.data;
     }

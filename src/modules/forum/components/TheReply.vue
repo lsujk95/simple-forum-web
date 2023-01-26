@@ -29,7 +29,7 @@
 import moment from 'moment';
 import { defineProps, toRef, computed, defineEmits, ref } from 'vue';
 import { useStore } from 'vuex';
-import LoadingBox from './layout/LoadingBox.vue';
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
 import useReply from "../hooks/reply.js";
 
 const props = defineProps({
