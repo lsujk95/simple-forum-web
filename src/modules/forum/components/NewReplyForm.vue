@@ -51,16 +51,16 @@ async function onFormSubmit() {
 
   try {
     const replyResponse = await replyHook.addReply(props.threadId, replyContent.value);
-    if (replyResponse.data.success === true) {
+    if (replyResponse.success === true) {
       replyContent.value = "";
-      emits('replyAdd', replyResponse.data.data);
+      emits('replyAdd', replyResponse.data);
     } else {
-      replyError.value = replyResponse.data.message;
+      replyError.value = replyResponse.message;
     }
 
     replyDuringAdd.value = false;
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 }
 </script>

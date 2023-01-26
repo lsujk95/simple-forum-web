@@ -41,11 +41,11 @@ const isLoading = computed(function () {
 async function loadCategories() {
   try {
     const categoryResponse = await categoriesHook.getCategories();
-    if (categoryResponse.data.success === true) {
-      categories.value = categoryResponse.data.data;
+    if (categoryResponse.success === true) {
+      categories.value = categoryResponse.data;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log('error', error);
   }
 }
 loadCategories();

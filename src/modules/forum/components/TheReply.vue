@@ -62,14 +62,14 @@ async function toggleReplyEdit() {
     replyDuringEditSave.value = true;
     try {
       const replyResponse = await replyHook.updateReply(reply.value.id, replyEditContent.value);
-      if (replyResponse.data.success === true) {
+      if (replyResponse.success === true) {
         reply.value.content = replyEditContent.value;
       } else {
-        replyEditError.value = replyResponse.data.message;
+        replyEditError.value = replyResponse.message;
       }
       replyDuringEditSave.value = false;
     } catch (error) {
-      console.log(error);
+      console.log('error', error);
     }
   }
 }
@@ -79,13 +79,13 @@ async function removeReply() {
   replyDuringRemove.value = true;
   try {
     const replyResponse = await replyHook.removeReply(reply.value.id);
-    if (replyResponse.data.success === true) {
+    if (replyResponse.success === true) {
       emits('replyRemove', reply.value.id);
     }
 
     replyDuringRemove.value = false;
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 }
 </script>

@@ -18,26 +18,37 @@ export default {
     },
     async login(context, payload) {
         const authHook = useAuth();
-        const response = await authHook.login(payload.email, payload.password);
-        if (response.data.success === true) {
-            const auth = response.data.data;
-
+        const response = await authHook.getToken(payload.email, payload.password);
+        if (response.success === true) {
+            const auth = response.data;
             await context.commit('setAuth', auth);
             localStorage.setItem('auth', JSON.stringify(auth));
         }
 
-        return response.data;
+        return response;
     },
     async register(context, payload) {
         const authHook = useAuth();
         const response = await authHook.register(payload.email, payload.password, payload.name);
-        if (response.data.success === true) {
-            const auth = response.data.data;
-
+        if (response.success === true) {
+            const auth = response.data;
             await context.commit('setAuth', auth);
             localStorage.setItem('auth', JSON.stringify(auth));
         }
 
-        return response.data;
+        return response;
+    },
+    async refreshToken(context, payload) {
+        const authHook = useAuth();
+        const response = await authHook.refreshToken(payload.token);
+        if (response.success === true) {
+            const auth = response.data;
+            await context.commit('setAuth', auth);
+            localStorage.setItem('auth', JSON.stringify(auth));
+        } else {
+            await context.dispatch('logout');
+        }
+
+        return response;
     },
 };

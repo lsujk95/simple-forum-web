@@ -57,12 +57,12 @@ async function loadThread() {
   isLoaded.value = false;
   try {
     const threadResponse = await threadHook.getThread(route.params.id);
-    if (threadResponse.data.success === true) {
-      thread.value = threadResponse.data.data;
+    if (threadResponse.success === true) {
+      thread.value = threadResponse.data;
       isLoaded.value = true;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log('error', error);
   }
 }
 

@@ -47,11 +47,11 @@ const isLoading = computed(function () {
 async function loadForum() {
   try {
     const forumResponse = await forumHook.getForum(route.params.id);
-    if (forumResponse.data.success === true) {
-      forum.value = forumResponse.data.data;
+    if (forumResponse.success === true) {
+      forum.value = forumResponse.data;
     }
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log('error', error);
   }
 }
 loadForum();

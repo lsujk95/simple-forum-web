@@ -8,41 +8,64 @@ export default function useBackend() {
 
     async function call(url, method = 'post', data = null, auth = false) {
         const host = config.host;
+        const language = config.language;
+
         const transformResponse = [(data) => {
             return camelcaseKeys(JSON.parse(data), { deep: true })
         }];
 
         let headers = {
-            'Accept': 'application/json',
-            'Accept-Language': 'pl',
-            'Device-Name': 'webapp',
+            common: {
+                'Accept': 'application/json',
+                'Accept-Language': language,
+                'Device-Name': 'webapp',
+            },
+            'Authorization': null,
         };
 
         if (auth === true) {
             headers['Authorization'] = 'Bearer ' + store.getters.getToken;
         }
 
+        let response;
         if (method === 'post') {
-            return await axios.post(host + url, data, {
+            response = await axios.post(host + url, data, {
                 headers: headers,
                 transformResponse: transformResponse,
-            });
+            }).catch((e) => e.response);
         } else if (method === 'put') {
-            return await axios.put(host + url, data, {
+            response = await axios.put(host + url, data, {
                 headers: headers,
                 transformResponse: transformResponse,
-            });
+            }).catch((e) => e.response);
         }  else if (method === 'delete') {
-            return await axios.delete(host + url, {
+            response = await axios.delete(host + url, {
                 headers: headers,
                 transformResponse: transformResponse,
-            });
+            }).catch((e) => e.response);
         }  else {
-            return await axios.get(host + url, {
+            response = await axios.get(host + url, {
                 headers: headers,
                 transformResponse: transformResponse,
-            });
+            }).catch((e) => e.response);
         }
+
+        if (response.status === 200) {
+            return response.data;
+        } else if (response.status === 401 && url !== '/api/auth/refresh-token') {
+            let tokenRefreshResponse = await store.dispatch('refreshToken', {
+                token: store.getters.getToken,
+            });
+            if (tokenRefreshResponse.success) {
+                return call(url, method, data, auth);
+            }
+        }
+
+        return {
+            success: false,
+            message: null,
+            data: response,
+        };
     }
     async function get(url, auth) {
         return call(url, 'get', null, auth);

@@ -11,15 +11,22 @@ export default function useAuth() {
         });
     }
 
-    async function login(email, password) {
-        return await backendHook.post('/api/auth/login', false, {
+    async function getToken(email, password) {
+        return await backendHook.post('/api/auth/get-token', false, {
             email: email,
             password: password,
         });
     }
 
+    async function refreshToken(token) {
+        return await backendHook.post('/api/auth/refresh-token', false, {
+            token: token,
+        });
+    }
+
     return {
         register,
-        login,
+        getToken,
+        refreshToken,
     };
 };
