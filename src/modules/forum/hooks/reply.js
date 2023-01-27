@@ -3,7 +3,7 @@ import useBackend from './../../../hooks/backend.js';
 export default function useReply() {
     const backendHook = useBackend();
 
-    async function addReply(threadId, content) {
+    async function createReply(threadId, content) {
         return await backendHook.post('/api/replies', true, {
             thread_id: threadId,
             content: content,
@@ -21,7 +21,7 @@ export default function useReply() {
     }
 
     return {
-        addReply,
+        createReply,
         updateReply,
         removeReply,
     };

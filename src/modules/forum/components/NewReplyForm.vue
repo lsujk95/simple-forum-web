@@ -50,7 +50,7 @@ async function onFormSubmit() {
   replyDuringAdd.value = true;
 
   try {
-    const replyResponse = await replyHook.addReply(props.threadId, replyContent.value);
+    const replyResponse = await replyHook.createReply(props.threadId, replyContent.value);
     if (replyResponse.success === true) {
       replyContent.value = "";
       emits('replyAdd', replyResponse.data);

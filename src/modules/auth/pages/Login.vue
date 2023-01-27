@@ -56,14 +56,12 @@ async function onFormSubmit() {
 
     if (response.success) {
       await router.push('/');
-    } else {
-      if (response.data != null) {
-        if (response.data.email != null) {
-          emailError.value = response.data.email.join(' ');
-        }
-        if (response.data.password != null) {
-          passwordError.value = response.data.password.join(' ');
-        }
+    } else if (response.data != null) {
+      if (response.data.email != null) {
+        emailError.value = response.data.email.join(' ');
+      }
+      if (response.data.password != null) {
+        passwordError.value = response.data.password.join(' ');
       }
     }
   } catch (error) {

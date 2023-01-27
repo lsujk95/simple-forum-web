@@ -12,7 +12,16 @@
         <div class="col-8 offset-2 mb-4">
           <div class="card">
             <div class="card-body">
-              <h2>{{ thread.name }}</h2>
+              <div class="d-flex">
+                <div class="flex-fill">
+                  <h2>{{ thread.name }}</h2>
+                </div>
+                <div>
+                  <button v-if="isOwner" @click="toggleThreadEdit" class="btn btn-link m-0 p-0" style="line-height: 1.0 !important;">
+                    {{ getEditButtonText }}
+                  </button>
+                </div>
+              </div>
               <hr>
               created by <a href="#">{{ thread.user.name }}</a> at <b>{{ moment(thread.createdAt).format('DD.MM.YYYY, HH:mm') }}</b>
             </div>
@@ -22,7 +31,16 @@
           <div class="card">
             <div class="card-body">
               <div class="mb-2"><b>{{ thread.user.name }}</b> <span class="text-muted">{{ moment(thread.createdAt).format('DD.MM.YYYY, HH:mm') }}</span></div>
-              <div>{{ thread.content }}</div>
+              <div v-if="showLoadingBox">
+                <loading-box></loading-box>
+              </div>
+              <div v-if="!threadDuringEdit && !showLoadingBox">{{ thread.content }}</div>
+              <div v-if="threadDuringEdit && !showLoadingBox">
+                <textarea class="form-control" :class="{'is-invalid': threadEditContentError}" style="resize: none;" id="threadEditContent" rows="3" v-model="threadEditContent"></textarea>
+                <div class="invalid-feedback">
+                  {{ threadEditContentError }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -38,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 import { useRoute } from 'vue-router';
 import moment from 'moment';
 import useThread from './../hooks/thread';
@@ -46,12 +64,18 @@ import useThread from './../hooks/thread';
 import TheReply from './../components/TheReply.vue';
 import NewReplyForm from './../components/NewReplyForm.vue';
 import LoadingBox from './../../../components/layout/LoadingBox.vue';
+import { useStore } from 'vuex';
 
 const route = useRoute();
+const store = useStore();
 const threadHook = useThread();
 
 const isLoaded = ref(false);
 const thread = ref(null);
+
+const isOwner = computed(function () {
+  return store.getters.getUser && store.getters.getUser.id === thread.value.userId;
+});
 
 async function loadThread() {
   isLoaded.value = false;
@@ -65,6 +89,7 @@ async function loadThread() {
     console.log('error', error);
   }
 }
+loadThread();
 
 function onReplyAdd(data) {
   if (data != null) {
@@ -81,7 +106,43 @@ function onReplyRemove(id) {
   }
 }
 
-loadThread();
+
+const threadDuringEdit = ref(false);
+const getEditButtonText = computed( () => {
+  return threadDuringEdit.value === true ? 'Save' : 'Edit';
+})
+
+const showLoadingBox = ref(false);
+const threadEditContent = ref('');
+const threadEditContentError = ref('');
+
+async function toggleThreadEdit() {
+  if (threadDuringEdit.value === false) {
+    threadEditContent.value = thread.value.content;
+    threadDuringEdit.value = true;
+  } else {
+    showLoadingBox.value = true;
+    try {
+      let threadResponse = await threadHook.updateThread(thread.value.id, thread.value.name, threadEditContent.value);
+      if (threadResponse.success === true) {
+        thread.value.content = threadEditContent.value;
+
+        showLoadingBox.value = false;
+        threadDuringEdit.value = false;
+      } else if (threadResponse.data != null) {
+        if (threadResponse.data.content != null) {
+          threadEditContentError.value = threadResponse.data.content.join(' ');
+        }
+
+        showLoadingBox.value = false;
+        threadDuringEdit.value = true;
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+}
+
 </script>
 
 <style scoped>
