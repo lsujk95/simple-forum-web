@@ -4,7 +4,7 @@ import { useStore } from "vuex";
 import config from "./../config.js";
 
 export default function useBackend() {
-    const store = useStore();
+    const storeHook = useStore();
 
     async function call(url, method = 'post', data = null, auth = false) {
         const host = config.host;
@@ -24,7 +24,7 @@ export default function useBackend() {
         };
 
         if (auth === true) {
-            headers['Authorization'] = 'Bearer ' + store.getters.getToken;
+            headers['Authorization'] = 'Bearer ' + storeHook.getters.getToken;
         }
 
         let response;
@@ -53,8 +53,8 @@ export default function useBackend() {
         if (response.status === 200) {
             return response.data;
         } else if (response.status === 401 && url !== '/api/auth/refresh-token') {
-            let tokenRefreshResponse = await store.dispatch('refreshToken', {
-                token: store.getters.getToken,
+            let tokenRefreshResponse = await storeHook.dispatch('refreshToken', {
+                token: storeHook.getters.getToken,
             });
             if (tokenRefreshResponse.success) {
                 return call(url, method, data, auth);

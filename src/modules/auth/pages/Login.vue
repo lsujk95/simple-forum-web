@@ -32,11 +32,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
 
-const store = useStore();
-const router = useRouter();
+// Store hook
+import { useStore } from 'vuex';
+const storeHook = useStore();
+
+// Router hook
+import { useRouter } from 'vue-router';
+const routerHook = useRouter();
 
 const email = ref('');
 const emailError = ref(null);
@@ -49,13 +52,13 @@ async function onFormSubmit() {
   passwordError.value = null;
 
   try {
-    const response = await store.dispatch('login', {
+    const response = await storeHook.dispatch('login', {
       email: email.value,
       password: password.value,
     });
 
     if (response.success) {
-      await router.push('/');
+      await routerHook.push('/');
     } else if (response.data != null) {
       if (response.data.email != null) {
         emailError.value = response.data.email.join(' ');

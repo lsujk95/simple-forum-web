@@ -40,7 +40,7 @@
               <div class="card-header d-flex">
                 <div class="flex-fill">{{ forum.name }}</div>
                 <div>
-                  <button class="btn btn-link m-0 p-0" style="line-height: 1.0 !important;" @click="createForum">Add</button>
+                  <button class="btn btn-link m-0 p-0" style="line-height: 1.0 !important;" @click="createThread">Add</button>
                 </div>
               </div>
               <ul class="list-group list-group-flush">
@@ -60,25 +60,29 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+
 import moment from 'moment';
-import useForum from './../hooks/forum.js';
-import useThread from './../hooks/thread.js';
+
+// LoadingBox
 import LoadingBox from './../../../components/layout/LoadingBox.vue';
-
-const route = useRoute();
-const forumHook = useForum();
-const threadHook = useThread();
-
-const forum = ref(null);
-
 const isLoading = computed(function () {
   return forum.value == null;
 });
 
+// Route hook
+import { useRoute } from 'vue-router';
+const routeHook = useRoute();
+
+// Forum hook
+import useForum from './../hooks/forum.js';
+const forumHook = useForum();
+
+// Forums list
+const forum = ref(null);
+
 async function loadForum() {
   try {
-    const forumResponse = await forumHook.getForum(route.params.id);
+    const forumResponse = await forumHook.getForum(routeHook.params.id);
     if (forumResponse.success === true) {
       forum.value = forumResponse.data;
     }
@@ -88,6 +92,11 @@ async function loadForum() {
 }
 loadForum();
 
+// Thread hook
+import useThread from './../hooks/thread.js';
+const threadHook = useThread();
+
+// Thread creating
 const threadName = ref("");
 const threadNameError = ref(null);
 
@@ -96,7 +105,8 @@ const threadContentError = ref(null);
 
 const showThreadCreateDialog = ref(false);
 const showThreadCreateSpinner = ref(false);
-function createForum() {
+
+function createThread() {
   showThreadCreateDialog.value = true;
 }
 

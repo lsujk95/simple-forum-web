@@ -28,15 +28,19 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import useCategories from "../hooks/categories.js";
+
+// Loading Box
 import LoadingBox from './../../../components/layout/LoadingBox.vue';
-
-const categoriesHook = useCategories();
-const categories = ref(null);
-
 const isLoading = computed(function () {
   return categories.value == null;
 });
+
+// Categories hook
+import useCategories from "../hooks/categories.js";
+const categoriesHook = useCategories();
+
+// Categories list
+const categories = ref(null);
 
 async function loadCategories() {
   try {

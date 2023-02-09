@@ -25,25 +25,32 @@
 
 <script setup>
 import { ref, defineProps, defineEmits, computed } from 'vue';
-import { useStore } from 'vuex';
-import LoadingBox from './../../../components/layout/LoadingBox.vue';
-import useReply from './../hooks/reply.js';
 
+// Loading box component
+import LoadingBox from './../../../components/layout/LoadingBox.vue';
+
+// Incoming/outcoming data
 const props = defineProps({
   threadId: Number,
 });
-
 const emits = defineEmits(['replyAdd']);
-const store = useStore();
-const replyHook = useReply();
+
+// Store hook
+import { useStore } from 'vuex';
+const storeHook = useStore();
 
 const isLoggedIn = computed(function () {
-  return store.getters.getToken != null;
+  return storeHook.getters.getToken != null;
 });
 
+// Reply hook
+import useReply from './../hooks/reply.js';
+const replyHook = useReply();
+
+// Reply creating
+const replyDuringAdd = ref(false);
 const replyContent = ref('');
 const replyError = ref(null);
-const replyDuringAdd = ref(false);
 
 async function onFormSubmit() {
   replyError.value = null;

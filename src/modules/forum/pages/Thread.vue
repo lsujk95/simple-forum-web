@@ -12,13 +12,14 @@
         <div class="col-8 offset-2 mb-4">
           <div class="card">
             <div class="card-body">
-              <div class="d-flex">
+              <div class="d-flex align-items-center">
                 <div class="flex-fill">
                   <h2>{{ thread.name }}</h2>
                 </div>
                 <div>
-                  <button v-if="isOwner" @click="toggleThreadEdit" class="btn btn-link m-0 p-0" style="line-height: 1.0 !important;">
-                    {{ getEditButtonText }}
+                  <button v-if="isOwner" @click="toggleThreadEdit" class="btn btn-outline-primary m-0 p-2" style="line-height: 1.0 !important;">
+                    <font-awesome-icon v-if="threadDuringEdit" icon="fa-solid fa-check" />
+                    <font-awesome-icon v-else icon="fa-solid fa-pen" />
                   </button>
                 </div>
               </div>
@@ -57,25 +58,42 @@
 
 <script setup>
 import {computed, ref} from 'vue';
-import { useRoute } from 'vue-router';
-import moment from 'moment';
-import useThread from './../hooks/thread';
 
+// Icons
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faPen, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+library.add({faPen, faCheck, faXmark});
+
+// Moment
+import moment from 'moment';
+
+// Components
 import TheReply from './../components/TheReply.vue';
 import NewReplyForm from './../components/NewReplyForm.vue';
+
+// Loading box
 import LoadingBox from './../../../components/layout/LoadingBox.vue';
-import { useStore } from 'vuex';
-
-const route = useRoute();
-const store = useStore();
-const threadHook = useThread();
-
 const isLoaded = ref(false);
-const thread = ref(null);
+
+// Route hook
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
+// Store hook
+import { useStore } from 'vuex';
+const store = useStore();
 
 const isOwner = computed(function () {
   return store.getters.getUser && store.getters.getUser.id === thread.value.userId;
 });
+
+// Thread hook
+import useThread from './../hooks/thread';
+const threadHook = useThread();
+
+
+// Thread
+const thread = ref(null);
 
 async function loadThread() {
   isLoaded.value = false;
@@ -91,27 +109,8 @@ async function loadThread() {
 }
 loadThread();
 
-function onReplyAdd(data) {
-  if (data != null) {
-    thread.value.replies.push(data);
-  }
-}
-
-function onReplyRemove(id) {
-  if (id != null) {
-    let replyIndex = thread.value.replies.findIndex((element) => element.id === id);
-    if (replyIndex !== -1) {
-      thread.value.replies.splice(replyIndex, 1);
-    }
-  }
-}
-
-
+// Thread editing
 const threadDuringEdit = ref(false);
-const getEditButtonText = computed( () => {
-  return threadDuringEdit.value === true ? 'Save' : 'Edit';
-})
-
 const showLoadingBox = ref(false);
 const threadEditContent = ref('');
 const threadEditContentError = ref('');
@@ -139,6 +138,22 @@ async function toggleThreadEdit() {
       }
     } catch (error) {
       console.log('error', error);
+    }
+  }
+}
+
+// Reply actions
+function onReplyAdd(data) {
+  if (data != null) {
+    thread.value.replies.push(data);
+  }
+}
+
+function onReplyRemove(id) {
+  if (id != null) {
+    let replyIndex = thread.value.replies.findIndex((element) => element.id === id);
+    if (replyIndex !== -1) {
+      thread.value.replies.splice(replyIndex, 1);
     }
   }
 }
